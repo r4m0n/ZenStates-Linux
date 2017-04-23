@@ -86,11 +86,11 @@ if args.pstate >= 0:
         new = setfid(new, args.fid)
         print('Setting FID to %X' % args.fid)
     if args.did >= 0:
-        new = setdid(new, args.fid)
-        print('Setting DID to %X' % args.fid)
+        new = setdid(new, args.did)
+        print('Setting DID to %X' % args.did)
     if args.vid >= 0:
-        new = setvid(new, args.fid)
-        print('Setting VID to %X' % args.fid)
+        new = setvid(new, args.vid)
+        print('Setting VID to %X' % args.vid)
     if new != old:
         if not (readmsr(0xC0010015) & (1 << 21)):
             print('Locking TSC frequency')
