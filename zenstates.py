@@ -1,22 +1,30 @@
 #!/usr/bin/python
 import struct
 import os
+import glob
 import argparse
 
 pstates = range(0xC0010064, 0xC001006C)
 
-def writemsr(msr, val):
+def writemsr(msr, val, cpu = -1):
     try:
-        f = os.open('/dev/cpu/0/msr', os.O_WRONLY)
-        os.lseek(f, msr, os.SEEK_SET)
-        os.write(f, struct.pack('Q', val))
-        os.close(f)
+        if cpu == -1:
+            for c in glob.glob('/dev/cpu/[0-9]*/msr'):
+                f = os.open(c, os.O_WRONLY)
+                os.lseek(f, msr, os.SEEK_SET)
+                os.write(f, struct.pack('Q', val))
+                os.close(f)
+        else:
+            f = os.open('/dev/cpu/%d/msr' % (cpu), os.O_WRONLY)
+            os.lseek(f, msr, os.SEEK_SET)
+            os.write(f, struct.pack('Q', val))
+            os.close(f)
     except:
         raise OSError("msr module not loaded (run modprobe msr)")
 
-def readmsr(msr):
+def readmsr(msr, cpu = 0):
     try:
-        f = os.open('/dev/cpu/0/msr', os.O_RDONLY)
+        f = os.open('/dev/cpu/%d/msr' % cpu, os.O_RDONLY)
         os.lseek(f, msr, os.SEEK_SET)
         val = struct.unpack('Q', os.read(f, 8))[0]
         os.close(f)
@@ -84,6 +92,10 @@ if args.pstate >= 0:
         new = setvid(new, args.fid)
         print('Setting VID to %X' % args.fid)
     if new != old:
+        if not (readmsr(0xC0010015) & (1 << 21)):
+            print('Locking TSC frequency')
+            for c in range(len(glob.glob('/dev/cpu/[0-9]*/msr'))):
+                writemsr(0xC0010015, readmsr(0xC0010015, c) | (1 << 21), c)
         print('New P' + str(args.pstate) + ': ' + pstate2str(new))
         writemsr(pstates[args.pstate], new)
 

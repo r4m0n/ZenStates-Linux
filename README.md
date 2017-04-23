@@ -1,4 +1,7 @@
 # ZenStates-Linux
+Collection of utilities for Ryzen processors and motherboards
+
+## zenstates.py
 Dynamically edit AMD Ryzen processor P-States
 
 Requires root access and the msr kernel module loaded (just run "modprobe msr" as root).
@@ -18,3 +21,8 @@ Requires root access and the msr kernel module loaded (just run "modprobe msr" a
       -d DID, --did DID     DID to set (in hex)
       -v VID, --vid VID     VID to set (in hex)
 
+
+## togglecode.py
+Turns on/off the Q-Code display on ASUS Crosshair VI Hero motherboards (and other boards with a compatible Super I/O chip)
+
+Requires root access and the portio python module (to install run "pip install portio")
