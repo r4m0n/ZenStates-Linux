@@ -20,6 +20,8 @@ Requires root access and the msr kernel module loaded (just run "modprobe msr" a
       -f FID, --fid FID     FID to set (in hex)
       -d DID, --did DID     DID to set (in hex)
       -v VID, --vid VID     VID to set (in hex)
+      --c6-enable           Enable C-State C6
+      --c6-disable          Disable C-State C6
 
 
 ## togglecode.py

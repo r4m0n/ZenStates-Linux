@@ -66,12 +66,16 @@ parser.add_argument('--disable', action='store_true', help='Disable P-State')
 parser.add_argument('-f', '--fid', default=-1, type=hex, help='FID to set (in hex)')
 parser.add_argument('-d', '--did', default=-1, type=hex, help='DID to set (in hex)')
 parser.add_argument('-v', '--vid', default=-1, type=hex, help='VID to set (in hex)')
+parser.add_argument('--c6-enable', action='store_true', help='Enable C-State C6')
+parser.add_argument('--c6-disable', action='store_true', help='Disable C-State C6')
 
 args = parser.parse_args()
 
 if args.list:
     for p in range(len(pstates)):
         print('P' + str(p) + " - " + pstate2str(readmsr(pstates[p])))
+    print('C6 State - Package - ' + ('Enabled' if readmsr(0xC0010292) & (1 << 32) else 'Disabled'))
+    print('C6 State - Core - ' + ('Enabled' if readmsr(0xC0010296) & ((1 << 22) | (1 << 14) | (1 << 6)) == ((1 << 22) | (1 << 14) | (1 << 6)) else 'Disabled'))
 
 if args.pstate >= 0:
     new = old = readmsr(pstates[args.pstate])
@@ -99,5 +103,15 @@ if args.pstate >= 0:
         print('New P' + str(args.pstate) + ': ' + pstate2str(new))
         writemsr(pstates[args.pstate], new)
 
-if not args.list and args.pstate == -1:
+if args.c6_enable:
+    writemsr(0xC0010292, readmsr(0xC0010292) | (1 << 32))
+    writemsr(0xC0010296, readmsr(0xC0010296) | ((1 << 22) | (1 << 14) | (1 << 6)))
+    print('Enabling C6 state')
+
+if args.c6_disable:
+    writemsr(0xC0010292, readmsr(0xC0010292) & ~(1 << 32))
+    writemsr(0xC0010296, readmsr(0xC0010296) & ~((1 << 22) | (1 << 14) | (1 << 6)))
+    print('Disabling C6 state')
+
+if not args.list and args.pstate == -1 and not args.c6_enable and not args.c6_disable:
     parser.print_help()
