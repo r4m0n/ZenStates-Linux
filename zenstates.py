@@ -36,7 +36,7 @@ def pstate2str(val):
     if val & (1 << 63):
         fid = val & 0xff
         did = (val & 0x3f00) >> 8
-        vid = (val & 0x3f0000) >> 14
+        vid = (val & 0x3fc000) >> 14
         ratio = 25*fid/(12.5 * did)
         vcore = 1.55 - 0.00625 * vid
         return "Enabled - FID = %X - DID = %X - VID = %X - Ratio = %.2f - vCore = %.5f" % (fid, did, vid, ratio, vcore)
