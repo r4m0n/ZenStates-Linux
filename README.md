@@ -1,3 +1,7 @@
+> **If you are looking for a fix regarding random freezes using an AMD Ryzen CPU while idle (mostly Linux - Windows is always busy..) then try fixing it via BIOS settings: CPU/Zen Options in BIOS - "Power Supply Idle Control" or "Global C-state Control" should be set to `Typical current idle` (previous value `Auto` or `Low current idle`.**
+> Sources: [bugzilla.kernel.org](https://bugzilla.kernel.org/show_bug.cgi?id=196683#c194), [Reddit thread](https://www.reddit.com/r/Amd/comments/cik3q1/can_we_recognize_broken_c6_states_in_all_of_zen/)
+
+
 # ZenStates-Linux
 Collection of utilities for Ryzen processors and motherboards
 
