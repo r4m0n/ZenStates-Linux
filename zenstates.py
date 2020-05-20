@@ -9,7 +9,7 @@ pstates = range(0xC0010064, 0xC001006C)
 def writemsr(msr, val, cpu = -1):
     try:
         if cpu == -1:
-            for c in glob.glob('/dev/cpu/[0-9]*/msr'):
+            for c in glob.glob('/dev/cpu/%d/msr'):
                 f = os.open(c, os.O_WRONLY)
                 os.lseek(f, msr, os.SEEK_SET)
                 os.write(f, struct.pack('Q', val))
